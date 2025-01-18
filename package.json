@@ -10,7 +10,7 @@
   "unity": "2021.3",
   "description": "Smart Addresser add-on for RoR2 mods",
   "dependencies": {
-    "com.unity.addressables": "1.18.15",
-    "com.passivepicasso.thunderkit": "9.1.0"
+    "jp.co.cyberagent.smartaddresser": "1.0.9",
+    "com.unity.addressables": "1.18.15"
   }
 }
