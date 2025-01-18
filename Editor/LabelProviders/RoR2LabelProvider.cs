@@ -1,14 +1,6 @@
 using SmartAddresser.Editor.Core.Models.LayoutRules.LabelRules;
 using SmartAddresser.Editor.Core.Models.Shared;
-using SmartAddresser.Editor.Core.Models.Shared.AssetGroups;
-using SmartAddresser.Editor.Core.Models.Shared.AssetGroups.AssetFilterImpl;
-using SmartAddresser.Editor.Core.Models.Shared.AssetGroups.ValidationError;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEditor;
-using UnityEditor.Search;
 using UnityEngine;
 
 namespace UESAddresser.Editor.LabelProviders

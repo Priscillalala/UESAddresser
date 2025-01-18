@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEditor;
-using UnityEditor.Search;
 using UnityEngine;
 
 namespace UESAddresser.Editor.AssetFilters
@@ -16,22 +15,26 @@ namespace UESAddresser.Editor.AssetFilters
     public class ComponentBasedAssetFilter : AssetFilterBase
     {
         public TypeReferenceListableProperty componentType = new TypeReferenceListableProperty();
+        public bool matchWithDerivedComponentTypes = true;
+        public bool searchChildren = false;
 
         private readonly List<string> invalidAssemblyQualifiedNames = new List<string>();
-        private readonly HashSet<string> matches = new HashSet<string>();
+        private readonly List<Type> validComponentTypes = new List<Type>();
+        private readonly Dictionary<string, Type[]> prefabToComponentTypes = new Dictionary<string, Type[]>();
+        private readonly Dictionary<Type, bool> componentResultsCache = new Dictionary<Type, bool>();
+        private readonly object componentResultsCacheLocker = new object();
 
         public override void SetupForMatching()
         {
-            invalidAssemblyQualifiedNames.Clear(); 
-            matches.Clear();
+            invalidAssemblyQualifiedNames.Clear();
+            validComponentTypes.Clear();
 
             foreach (var typeRef in componentType)
             {
-                if (typeRef == null)
+                if (typeRef == null || !typeRef.IsValid())
+                {
                     continue;
-
-                if (!typeRef.IsValid())
-                    continue;
+                }
 
                 var assemblyQualifiedName = typeRef.AssemblyQualifiedName;
                 var type = Type.GetType(assemblyQualifiedName);
@@ -41,17 +44,40 @@ namespace UESAddresser.Editor.AssetFilters
                 }
                 else
                 {
-                    foreach (var result in SearchService.Request($"p: prefab=any t={type.FullName}", SearchFlags.Synchronous | SearchFlags.WantsMore | SearchFlags.NoIndexing))
-                    {
-                        string assetPath = SearchUtils.GetAssetPath(result);
-                        if (!string.IsNullOrEmpty(assetPath))
-                        {
-                            Debug.Log($"Matched {assetPath}");
-                            matches.Add(assetPath);
-                        }
-                    }
+                    validComponentTypes.Add(type);
                 }
             }
+
+            prefabToComponentTypes.Clear();
+            List<Component> results = new List<Component>();
+            foreach (var prefabPath in AssetDatabase.FindAssets("t:prefab a:assets").Select(AssetDatabase.GUIDToAssetPath))
+            {
+                if (prefabToComponentTypes.ContainsKey(prefabPath))
+                {
+                    continue;
+                }
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                if (!prefab)
+                {
+                    continue;
+                }
+                results.Clear();
+                if (searchChildren)
+                {
+                    prefab.GetComponentsInChildren(true, results);
+                }
+                else
+                {
+                    prefab.GetComponents(results);
+                }
+                Type[] componentTypes = results
+                    .Select(x => x.GetType())
+                    .Distinct()
+                    .ToArray();
+                prefabToComponentTypes.Add(prefabPath, componentTypes);
+            }
+
+            componentResultsCache.Clear();
         }
 
         public override bool Validate(out AssetFilterValidationError error)
@@ -72,7 +98,34 @@ namespace UESAddresser.Editor.AssetFilters
 
         public override bool IsMatch(string assetPath, Type assetType, bool isFolder)
         {
-            return matches.Contains(assetPath);
+            if (assetType != typeof(GameObject) || !prefabToComponentTypes.TryGetValue(assetPath, out var componentTypes))
+            {
+                return false;
+            }
+            foreach (var componentType in componentTypes)
+            {
+                if (!componentResultsCache.TryGetValue(componentType, out var componentResult))
+                {
+                    componentResult = false;
+                    foreach (var validComponentType in validComponentTypes)
+                    {
+                        if (componentType == validComponentType || (matchWithDerivedComponentTypes && componentType.IsSubclassOf(validComponentType)))
+                        {
+                            componentResult = true;
+                            break;
+                        }
+                    }
+                    lock (componentResultsCacheLocker)
+                    {
+                        componentResultsCache.Add(componentType, componentResult);
+                    }
+                }
+                if (componentResult)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public override string GetDescription()

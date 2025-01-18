@@ -1,7 +1,5 @@
-using SmartAddresser.Editor.Core.Tools.Addresser.Shared;
 using SmartAddresser.Editor.Foundation.CustomDrawers;
 using UESAddresser.Editor.AssetFilters;
-using UnityEditor;
 
 namespace UESAddresser.Editor.AssetFiltersGUI
 {

@@ -83,6 +83,8 @@ namespace UESAddresser.Editor
                 assetGroup.Filters.Add(new ComponentBasedAssetFilter
                 {
                     componentType = { IsListMode = false, Value = TypeReference.Create(componentType) },
+                    matchWithDerivedComponentTypes = true,
+                    searchChildren = false,
                 });
                 labelRule.AssetGroups.Add(assetGroup);
 
