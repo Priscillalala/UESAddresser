@@ -59,7 +59,7 @@ namespace UESAddresser.Editor
         }
 
         [MenuItem(MENU_ROOT + "Install Addressables Group Template")]
-        public static void InstallAddressableGroupTemplate()
+        public static void InstallAddressablesGroupTemplate()
         {
             var aa = AddressableAssetSettingsDefaultObject.Settings;
             if (!aa)
