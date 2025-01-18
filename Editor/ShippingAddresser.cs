@@ -14,6 +14,8 @@ namespace UESAddresser.Editor
     public class ShippingAddresser
     {
         const string MENU_ROOT = "Tools/UES Addresser/";
+        const string DATA_CONTEXT_ROOT = "CONTEXT/" + nameof(LayoutRuleData) + "/";
+
 
         const string CREATE_LABEL_RULES_PATH = MENU_ROOT + "Create RoR2 Label Rules/Primary Layout Rule Data";
         const string REMOVE_LABEL_RULES_PATH = MENU_ROOT + "Remove RoR2 Label Rules/Primary Layout Rule Data";
@@ -27,25 +29,35 @@ namespace UESAddresser.Editor
         }
 
         [MenuItem(CREATE_LABEL_RULES_PATH)]
-        public static void CreateLabelRules()
+        [MenuItem(DATA_CONTEXT_ROOT + "Create RoR2 Label Rules")]
+        public static void CreateLabelRules(MenuCommand command)
         {
-            var instance = SmartAddresserProjectSettings.instance;
-            if (instance && instance.PrimaryData && instance.PrimaryData.LayoutRule != null)
+            if (command.context is not LayoutRuleData data)
             {
-                RemoveRoR2LabelRules(instance.PrimaryData.LayoutRule);
-                AddRoR2LabelRules(instance.PrimaryData.LayoutRule);
-                EditorUtility.SetDirty(instance.PrimaryData);
+                var instance = SmartAddresserProjectSettings.instance;
+                data = instance ? instance.PrimaryData : null;
+            }
+            if (data)
+            {
+                RemoveRoR2LabelRules(data.LayoutRule);
+                AddRoR2LabelRules(data.LayoutRule);
+                EditorUtility.SetDirty(data);
             }
         }
 
         [MenuItem(REMOVE_LABEL_RULES_PATH)]
-        public static void RemoveLabelRules()
+        [MenuItem(DATA_CONTEXT_ROOT + "Remove RoR2 Label Rules")]
+        public static void RemoveLabelRules(MenuCommand command)
         {
-            var instance = SmartAddresserProjectSettings.instance;
-            if (instance && instance.PrimaryData && instance.PrimaryData.LayoutRule != null)
+            if (command.context is not LayoutRuleData data)
             {
-                RemoveRoR2LabelRules(instance.PrimaryData.LayoutRule);
-                EditorUtility.SetDirty(instance.PrimaryData);
+                var instance = SmartAddresserProjectSettings.instance;
+                data = instance ? instance.PrimaryData : null;
+            }
+            if (data)
+            {
+                RemoveRoR2LabelRules(data.LayoutRule);
+                EditorUtility.SetDirty(data);
             }
         }
 
