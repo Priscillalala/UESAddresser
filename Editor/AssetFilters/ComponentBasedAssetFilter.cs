@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
 
-namespace UESAddresser.Editor
+namespace UESAddresser.Editor.AssetFilters
 {
     [Serializable]
     [AssetFilter("Component Filter", "Component Filter")]
@@ -41,7 +41,7 @@ namespace UESAddresser.Editor
                 }
                 else
                 {
-                    foreach (var result in SearchService.Request($"p: prefab=any t={type.FullName}", SearchFlags.Synchronous))
+                    foreach (var result in SearchService.Request($"p: prefab=any t={type.FullName}", SearchFlags.Synchronous | SearchFlags.WantsMore | SearchFlags.NoIndexing))
                     {
                         string assetPath = SearchUtils.GetAssetPath(result);
                         if (!string.IsNullOrEmpty(assetPath))

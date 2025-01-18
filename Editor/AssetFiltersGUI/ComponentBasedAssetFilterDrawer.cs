@@ -1,8 +1,9 @@
 using SmartAddresser.Editor.Core.Tools.Addresser.Shared;
 using SmartAddresser.Editor.Foundation.CustomDrawers;
+using UESAddresser.Editor.AssetFilters;
 using UnityEditor;
 
-namespace UESAddresser.Editor
+namespace UESAddresser.Editor.AssetFiltersGUI
 {
     [CustomGUIDrawer(typeof(ComponentBasedAssetFilter))]
     public class ComponentBasedAssetFilterDrawer : GUIDrawer<ComponentBasedAssetFilter>

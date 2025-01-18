@@ -6,11 +6,11 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using Item = SmartAddresser.Editor.Core.Tools.Addresser.Shared.TypeSelectDropdown.Item;
 
-namespace UESAddresser.Editor
+namespace UESAddresser.Editor.AssetFiltersGUI
 {
     public class ComponentTypeSelectDropdown : AdvancedDropdown
     {
-        private const string RootItemKey = "Type";
+        private const string RootItemKey = "ComponentType";
 
         public ComponentTypeSelectDropdown(AdvancedDropdownState state) : base(state)
         {
@@ -23,13 +23,6 @@ namespace UESAddresser.Editor
 
         protected override AdvancedDropdownItem BuildRoot()
         {
-            var excludeTypes = new[]
-            {
-                typeof(Component),
-                typeof(UnityEditor.Editor),
-                typeof(EditorWindow)
-            };
-
             var types = TypeCache.GetTypesDerivedFrom<Component>().Where(x => x.IsPublic && !x.IsAbstract);
 
             var items = new Dictionary<string, Item>();

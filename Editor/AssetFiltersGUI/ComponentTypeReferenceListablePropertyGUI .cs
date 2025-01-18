@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace UESAddresser.Editor
+namespace UESAddresser.Editor.AssetFiltersGUI
 {
     public class ComponentTypeReferenceListablePropertyGUI : ListablePropertyGUI<TypeReference>
     {
@@ -46,7 +46,6 @@ namespace UESAddresser.Editor
                     dropdown.Show(propertyRect);
                 }
             }, () => new TypeReference())
-        {
-        }
+        { }
     }
 }
