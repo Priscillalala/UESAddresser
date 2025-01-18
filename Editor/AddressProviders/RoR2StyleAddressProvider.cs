@@ -24,7 +24,7 @@ namespace UESAddresser.Editor.AddressProviders
 
         public string GetDescription()
         {
-            return "RoR2 Style";
+            return "Style: RoR2";
         }
     }
 }
