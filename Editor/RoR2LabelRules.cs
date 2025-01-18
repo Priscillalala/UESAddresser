@@ -3,14 +3,9 @@ using SmartAddresser.Editor.Core.Models.LayoutRules;
 using SmartAddresser.Editor.Core.Models.LayoutRules.LabelRules;
 using SmartAddresser.Editor.Core.Models.Shared.AssetGroups;
 using SmartAddresser.Editor.Core.Models.Shared.AssetGroups.AssetFilterImpl;
-using SmartAddresser.Editor.Core.Tools.Shared;
 using System;
 using UESAddresser.Editor.AssetFilters;
 using UESAddresser.Editor.LabelProviders;
-using UnityEditor;
-using UnityEditor.AddressableAssets;
-using UnityEditor.AddressableAssets.Settings;
-using UnityEngine;
 
 namespace UESAddresser.Editor
 {
