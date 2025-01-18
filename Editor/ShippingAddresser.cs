@@ -8,12 +8,17 @@ using System;
 using UESAddresser.Editor.AssetFilters;
 using UESAddresser.Editor.LabelProviders;
 using UnityEditor;
+using UnityEditor.AddressableAssets;
+using UnityEditor.AddressableAssets.Settings;
+using UnityEngine;
 
 namespace UESAddresser.Editor
 {
     public class ShippingAddresser
     {
         const string MENU_ROOT = "Tools/UES Addresser/";
+        public const string PACKAGE_ASSETS_DIRECTORY = "Packages/groovesalad.uesaddresser/Assets";
+
         const string DATA_CONTEXT_ROOT = "CONTEXT/" + nameof(LayoutRuleData) + "/";
 
         const string CREATE_LABEL_RULES_PATH = MENU_ROOT + "Create RoR2 Label Rules/Primary Layout Rule Data";
@@ -115,6 +120,37 @@ namespace UESAddresser.Editor
                     layoutRule.LabelRules.RemoveAt(i);
                 }
             }
+        }
+
+        [MenuItem(MENU_ROOT + "Install Addressables Group Template")]
+        public static void InstallAddressableGroupTemplate()
+        {
+            var aa = AddressableAssetSettingsDefaultObject.Settings;
+            if (!aa)
+            {
+                return;
+            }
+            string modAssetsTemplatePath = PACKAGE_ASSETS_DIRECTORY + "/AssetGroupTemplates/Mod Assets.asset";
+            var modAssetsTemplate = AssetDatabase.LoadAssetAtPath<AddressableAssetGroupTemplate>(modAssetsTemplatePath);
+            if (!modAssetsTemplate)
+            {
+                Debug.LogError($"Could not find mod assets template at {modAssetsTemplatePath}");
+                return;
+            }
+            if (aa.GroupTemplateObjects.Contains(modAssetsTemplate))
+            {
+                return;
+            }
+            for (int i = 0; i < aa.GroupTemplateObjects.Count; i++)
+            {
+                var template = aa.GetGroupTemplateObject(i);
+                if (template != null && template.Name == "Packed Assets")
+                {
+                    aa.SetGroupTemplateObjectAtIndex(i, modAssetsTemplate);
+                    return;
+                }
+            }
+            aa.AddGroupTemplateObject(modAssetsTemplate);
         }
     }
 }
