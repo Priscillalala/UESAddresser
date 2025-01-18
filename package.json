@@ -8,7 +8,7 @@
   "displayName": "UES Addresser",
   "version": "1.0.0",
   "unity": "2021.3",
-  "description": "A ThunderKit package for building Risk of Rain 2 mods that depend on addressable assets, with full editor support",
+  "description": "Smart Addresser add-on for RoR2 mods",
   "dependencies": {
     "com.unity.addressables": "1.18.15",
     "com.passivepicasso.thunderkit": "9.1.0"
